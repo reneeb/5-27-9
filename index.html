@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Checklist for Perl release 5.25.10</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./css/blog.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="/">Home</a>
+          <a class="blog-nav-item" href="#">Download current .tar.gz</a>
+          <a class="blog-nav-item" href="http://perl-services.de/imprint">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">The Perl release 5.25.10</h1>
+        <p class="lead blog-description">My checklist for the developer release 5.25.10 of the programming language Perl.</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">Current TODOs</h2>
+            <p class="blog-post-meta">February 16, 2017 by Renée</p>
+
+<div class="panel panel-success">
+  <div class="panel-heading">Release!</div>
+  <div class="panel-body">
+    <p>You can test the release!!</p>
+    <ul>
+        <li><a href="./release/perl-5.25.10.tar.bz2">perl-5.25.10.tar.bz2</a> (ec5aa296f66860aa85978e41f4ef8207b1ea084b)</li>
+        <li><a href="./release/perl-5.25.10.tar.gz">perl-5.25.10.tar.gz</a> (0e7f4400de762b15d108f44b522175562ed51277)</li>
+        <li><a href="./release/perl-5.25.10.tar.xz">perl-5.25.10.tar.xz</a> (f1090316ae6c831c88200d3ed77d2c86b2771e31)</li>
+    </ul>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> </span></div>
+</div>
+
+<div class="panel panel-warning">
+  <div class="panel-heading">rt.perl.org update access</div>
+  <div class="panel-body">
+<p>Make sure you have permission to close tickets on <a href="http://rt.perl.org/">http://rt.perl.org/</a> so you can respond to bug report as necessary during your stint. If you don't, make an account (if you don't have one) and contact the pumpking with your username to get ticket-closing permission.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-remove"></span> Created new account and requested permissions.</span></div>
+</div>
+
+<div class="panel panel-warning">
+  <div class="panel-heading">Quotation for release announcement epigraph</div>
+  <div class="panel-body">
+<p>You will need a quotation to use as an epigraph to your release announcement.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> I have one, will be published on this website soon.</span></div>
+</div>
+
+<div class="panel panel-danger">
+  <div class="panel-heading">blog about your epigraph</div>
+  <div class="panel-body">
+
+
+<p>If you have a blog, please consider writing an entry in your blog explaining why you chose that particular quote for your epigraph.</p>
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-remove"></span> Not done, yet.</span></div>
+</div>
+
+<div class="panel panel-danger">
+  <div class="panel-heading">make the maint branch available in the APC</div>
+  <div class="panel-body">
+
+
+<p>Clone the new branch into /srv/gitcommon/branches on camel so the APC will receive its changes.</p>
+
+<pre>    $ git clone --branch maint-5.14 /gitroot/perl.git \
+    ?  /srv/gitcommon/branches/perl-5.14.x
+    $ chmod -R g=u /srv/gitcommon/branches/perl-5.14.x</pre>
+
+<p>And nag the sysadmins to make this directory available via rsync.</p>
+
+<p>XXX Who are the sysadmins? Contact info?</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-remove"></span> Not done, yet.</span></div>
+</div>
+
+<div class="panel panel-danger">
+  <div class="panel-heading">Relax!</div>
+  <div class="panel-body">
+
+
+<p><i>You MUST RETIRE to your preferred PUB, CAFE or SEASIDE VILLA for some much-needed rest and relaxation</i>.</p>
+
+<p>Thanks for releasing perl!</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-remove"></span> Not done, yet.</span></div>
+</div>
+
+<div class="panel panel-danger">
+  <div class="panel-heading">update dev.perl.org</div>
+  <div class="panel-body">
+
+
+<p><i>You MUST SKIP this step for a RC release</i></p>
+
+<p>In your <code>perlweb</code> repository, link to the new release. For a new latest-maint release, edit <em>docs/shared/tpl/stats.html</em>. Otherwise, edit <em>docs/dev/perl5/index.html</em>.</p>
+
+<p>Then make a pull request to Leo Lapworth. If this fails for some reason and you cannot cajole anybody else into submitting that change, you can mail Leo as last resort.</p>
+
+<p>This repository can be found on <a href="https://github.com/perlorg/perlweb" class="podlinkurl"
+>github</a>.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-remove"></span> Not done, yet.</span></div>
+</div>
+
+
+          </div><!-- /.blog-post -->
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>This checklist is based on the <a href="https://metacpan.org/pod/distribution/perl/Porting/release_managers_guide.pod">Release Manager Guide</a>.</p>
+            <p>The sources for this website are available at <a href="https://github.com/reneeb/5-25-10">https://github.com/reneeb/5-25-10</a>.</p>
+          </div>
+          <div class="sidebar-module">
+            <h4>Steps</h4>
+            <ol class="list-unstyled">
+              <li><a href="./prerequesits.html">Prerequesits</a></li>
+              <li><a href="./advance_actions.html">Building a release - advance actions</a></li>
+              <li><a href="./on_the_day.html">Building a release - on the day</a></li>
+              <li><a href="./day_after.html">Building a release - the day after</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+  </body>
+</html>
+

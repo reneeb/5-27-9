@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Checklist for Perl release 5.25.10</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./css/blog.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="/">Home</a>
+          <a class="blog-nav-item" href="#">Download current .tar.gz</a>
+          <a class="blog-nav-item" href="http://perl-services.de/imprint">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">The Perl release 5.25.10</h1>
+        <p class="lead blog-description">My checklist for the developer release 5.25.10 of the programming language Perl.</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">Building a release - advance action</h2>
+            <p class="blog-post-meta">February 15, 2017 by Renée</p>
+<!-- content -->
+<div class="panel panel-success">
+  <div class="panel-heading">dual-life CPAN module synchronisation</div>
+  <div class="panel-body">
+
+
+<p>To see which core distro versions differ from the current CPAN versions:</p>
+
+<pre>    $ ./perl -Ilib Porting/core-cpan-diff -x -a</pre>
+
+<p>However, this only checks whether the version recorded in <em>Porting/Maintainers.pl</em> differs from the latest on CPAN. It doesn&#39;t tell you if the code itself has diverged from CPAN.</p>
+
+<p>You can also run an actual diff of the contents of the modules, comparing core to CPAN, to ensure that there were no erroneous/extraneous changes that need to be dealt with. You do this by not passing the <code>-x</code> option:</p>
+
+<pre>    $ ./perl -Ilib Porting/core-cpan-diff -a -o /tmp/corediffs</pre>
+
+<p>Passing <code>-u cpan</code> will probably be helpful, since it limits the search to distributions with &#39;cpan&#39; upstream source. (It&#39;s OK for blead upstream to differ from CPAN because those dual-life releases usually come <i>after</i> perl is released.)</p>
+
+<p>See also the <code>-d</code> and <code>-v</code> options for more detail (and the <code>-u</code> option as mentioned above). You&#39;ll probably want to use the <code>-c cachedir</code> option to avoid repeated CPAN downloads and may want to use <code>-m file:///mirror/path</code> if you made a local CPAN mirror. Note that a minicpan mirror won&#39;t actually work, but can provide a good first pass to quickly get a list of modules which definitely haven&#39;t changed, to avoid having to download absolutely everything.</p>
+
+<p>For a BLEAD-POINT or BLEAD-FINAL release with &#39;cpan&#39; upstream, if a CPAN release appears to be ahead of blead, then consider updating it (or asking the relevant porter to do so). (However, if this is a BLEAD-FINAL release or one of the last BLEAD-POINT releases before it and hence blead is in some kind of &#34;code freeze&#34; state (e.g. the sequence might be &#34;contentious changes freeze&#34;, then &#34;user-visible changes freeze&#34; and finally &#34;full code freeze&#34;) then any CPAN module updates must be subject to the same restrictions, so it may not be possible to update all modules until after the BLEAD-FINAL release.) If blead contains edits to a &#39;cpan&#39; upstream module, this is naughty but sometimes unavoidable to keep blead tests passing. Make sure the affected file has a CUSTOMIZED entry in <em>Porting/Maintainers.pl</em>.</p>
+
+<p>If you are making a MAINT release, run <code>core-cpan-diff</code> on both blead and maint, then diff the two outputs. Compare this with what you expect, and if necessary, fix things up. For example, you might think that both blead and maint are synchronised with a particular CPAN module, but one might have some extra changes.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> Nothing done, due to code freeze. Last run of script 2017-02-19</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">How to sync a CPAN module with a cpan/ distro</div>
+  <div class="panel-body">
+
+
+<p>In most cases, once a new version of a distribution shipped with core has been uploaded to CPAN, the core version thereof can be synchronized automatically with the program <em>Porting/sync-with-cpan</em>. (But see the comments at the beginning of that program. In particular, it has not yet been exercised on Windows as much as it has on Unix-like platforms.)</p>
+
+<p>If, however, <em>Porting/sync-with-cpan</em> does not provide good results, follow the steps below.</p>
+<ul>
+<li>Fetch the most recent version from CPAN.</li>
+
+<li>Unpack the retrieved tarball. Rename the old directory; rename the new directory to the original name.</li>
+
+<li>Restore any <em>.gitignore</em> file. This can be done by issuing <code>git checkout .gitignore</code> in the <em>cpan/Distro</em> directory.</li>
+
+<li>Remove files we do not need. That is, remove any files that match the entries in <code>@IGNORABLE</code> in <em>Porting/Maintainers.pl</em>, and anything that matches the <code>EXCLUDED</code> section of the distro&#39;s entry in the <code>%Modules</code> hash.</li>
+
+<li>Restore any files mentioned in the <code>CUSTOMIZED</code> section, using <code>git checkout</code>. Make any new customizations if necessary. Also, restore any files that are mentioned in <code>@IGNORE</code>, but were checked into the repository anyway.</li>
+
+<li>For any new files in the distro, determine whether they are needed. If not, delete them, and list them in either <code>EXCLUDED</code> or <code>@IGNORABLE</code>. Otherwise, add them to <code>MANIFEST</code>, and run <code>git add</code> to add the files to the repository.</li>
+
+<li>For any files that are gone, remove them from <code>MANIFEST</code>, and use <code>git rm</code> to tell git the files will be gone.</li>
+
+<li>If the <code>MANIFEST</code> file was changed in any of the previous steps, run <code>perl Porting/manisort --output MANIFEST.sort; mv MANIFEST.sort MANIFEST</code>.</li>
+
+<li>For any files that have an execute bit set, either remove the execute bit, or edit <em>Porting/exec-bit.txt</em></li>
+
+<li>Run <code>make</code> (or <code>nmake</code> on Windows), see if <code>perl</code> compiles.</li>
+
+<li>Run the tests for the package.</li>
+
+<li>Run the tests in <em>t/porting</em> (<code>make test_porting</code>).</li>
+
+<li>Update the <code>DISTRIBUTION</code> entry in <em>Porting/Maintainers.pl</em>.</li>
+
+<li>Run a full configure/build/test cycle.</li>
+
+<li>If everything is ok, commit the changes.</li>
+</ul>
+
+<p>For entries with a non-simple <code>FILES</code> section, or with a <code>MAP</code>, you may have to take more steps than listed above.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> Nothing done due to code freeze.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">dual-life CPAN module stability</div>
+  <div class="panel-body">
+<p>Ensure dual-life CPAN modules are stable, which comes down to:</p>
+
+<pre>   for each module that fails its regression tests on $current
+       did it fail identically on $previous?
+       if yes, &#34;SEP&#34; (Somebody Else&#39;s Problem)
+       else work out why it failed (a bisect is useful for this)
+
+   attempt to group failure causes
+
+   for each failure cause
+       is that a regression?
+       if yes, figure out how to fix it
+           (more code? revert the code that broke it)
+       else
+           (presumably) it&#39;s relying on something un-or-under-documented
+           should the existing behaviour stay?
+               yes - goto &#34;regression&#34;
+               no - note it in perldelta as a significant bugfix
+               (also, try to inform the module&#39;s author)</pre>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> done.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">monitor smoke tests for failures</div>
+  <div class="panel-body">
+
+
+<p>Similarly, monitor the smoking of core tests, and try to fix. See <a href="http://smoke.procura.nl/index.html" class="podlinkurl"
+>http://smoke.procura.nl/index.html</a>, <a href="http://perl5.test-smoke.org/" class="podlinkurl"
+>http://perl5.test-smoke.org/</a> and <a href="http://perl.develop-help.com" class="podlinkurl"
+>http://perl.develop-help.com</a> for a summary. See also <a href="http://www.nntp.perl.org/group/perl.daily-build.reports/" class="podlinkurl"
+>http://www.nntp.perl.org/group/perl.daily-build.reports/</a> which has the raw reports.</p>
+
+<p>Similarly, monitor the smoking of perl for compiler warnings, and try to fix.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> done.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">monitor CPAN testers for failures</div>
+  <div class="panel-body">
+<p>For any release except a BLEAD-POINT: Examine the relevant analysis report(s) at http://analysis.cpantesters.org/beforemaintrelease to see how the impending release is performing compared to previous releases with regard to building and testing CPAN modules.</p>
+
+<p>That page accepts a query parameter, <code>pair</code> that takes a pair of colon-delimited versions to use for comparison. For example:</p>
+
+<p>http://analysis.cpantesters.org/beforemaintrelease?pair=5.20.2:5.22.0%20RC1</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> This is a BLEAD-POINT release.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">update perldelta</div>
+  <div class="panel-body">
+
+
+<p>Get perldelta in a mostly finished state.</p>
+
+<p>Read <em>Porting/how_to_write_a_perldelta.pod</em>, and try to make sure that every section it lists is, if necessary, populated and complete. Copy edit the whole document.</p>
+
+<p>You won&#39;t be able to automatically fill in the &#34;Updated Modules&#34; section until after Module::CoreList is updated (as described below in <a href="#update_Module%3A%3ACoreList" class="podlinkpod"
+>&#34;update Module::CoreList&#34;</a>).</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-done"></span> done.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">Bump the version number</div>
+  <div class="panel-body">
+
+
+<p>Do not do this yet for a BLEAD-POINT release! You will do this at the end of the release process.</p>
+
+<p>Increase the version number (e.g. from 5.12.0 to 5.12.1).</p>
+
+<p>For a release candidate for a stable perl, this should happen a week or two before the first release candidate to allow sufficient time for testing and smoking with the target version built into the perl executable. For subsequent release candidates and the final release, it is not necessary to bump the version further.</p>
+
+<p>There is a tool to semi-automate this process:</p>
+
+<pre>    $ ./perl -Ilib Porting/bump-perl-version -i 5.10.0 5.10.1</pre>
+
+<p>Remember that this tool is largely just grepping for &#39;5.10.0&#39; or whatever, so it will generate false positives. Be careful not change text like &#34;this was fixed in 5.10.0&#34;!</p>
+<p>Use git status and git diff to select changes you want to keep.</p>
+
+<p>Be particularly careful with <em>INSTALL</em>, which contains a mixture of <code>5.10.0</code>-type strings, some of which need bumping on every release, and some of which need to be left unchanged. See below in <a href="#update_INSTALL" class="podlinkpod"
+>&#34;update INSTALL&#34;</a> for more details.</p>
+
+<p>For the first RC release leading up to a BLEAD-FINAL release, update the description of which releases are now &#34;officially&#34; supported in <em>pod/perlpolicy.pod</em>.</p>
+
+<p>When doing a BLEAD-POINT or BLEAD-FINAL release, also make sure the <code>PERL_API_*</code> constants in <em>patchlevel.h</em> are in sync with the version you&#39;re releasing, unless you&#39;re absolutely sure the release you&#39;re about to make is 100% binary compatible to an earlier release. When releasing a MAINT perl version, the <code>PERL_API_*</code> constants <code>MUST NOT</code> be changed as we aim to guarantee binary compatibility in maint branches.</p>
+
+<p>After editing, regenerate uconfig.h (this must be run on a system with a /bin/sh available):</p>
+
+<pre> $ perl regen/uconfig_h.pl</pre>
+
+<p>This might not cause any new changes.</p>
+
+<p>You may also need to regen opcodes:</p>
+
+<pre> $ ./perl -Ilib regen/opcode.pl</pre>
+
+<p>Test your changes:</p>
+
+<pre> $ git clean -xdf   # careful if you don&#39;t have local files to keep!
+ $ ./Configure -des -Dusedevel
+ $ make
+ $ make test</pre>
+
+<p>Do note that at this stage, porting tests will fail. They will continue to fail until you&#39;ve updated Module::CoreList, as described below.</p>
+
+<p>Commit your changes:</p>
+
+<pre> $ git status
+ $ git diff
+ B&#60;review the delta carefully&#62;
+
+ $ git commit -a -m &#39;Bump the perl version in various places for 5.x.y&#39;</pre>
+
+<p>At this point you may want to compare the commit with a previous bump to see if they look similar. See commit f7cf42bb69 for an example of a previous version bump.</p>
+
+<p>When the version number is bumped, you should also update Module::CoreList (as described below in <a href="#update_Module%3A%3ACoreList" class="podlinkpod"
+>&#34;update Module::CoreList&#34;</a>) to reflect the new version number.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> Not done, yet. There's a section about bumping version numbers on "the day after".</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">update INSTALL</div>
+  <div class="panel-body">
+
+
+<p>Review and update INSTALL to account for the change in version number. The lines in <em>INSTALL</em> about &#34;is not binary compatible with&#34; may require a correct choice of earlier version to declare incompatibility with. These are in the &#34;Changes and Incompatibilities&#34; and &#34;Coexistence with earlier versions of perl 5&#34; sections.</p>
+
+<p>Be particularly careful with the section &#34;Upgrading from 5.X.Y or earlier&#34;. The &#34;X.Y&#34; needs to be changed to the most recent version that we are <i>not</i> binary compatible with.</p>
+
+<p>For MAINT and BLEAD-FINAL releases, this needs to refer to the last release in the previous development cycle (so for example, for a 5.14.x release, this would be 5.13.11).</p>
+
+<p>For BLEAD-POINT releases, it needs to refer to the previous BLEAD-POINT release (so for 5.15.3 this would be 5.15.2). If the last release manager followed instructions, this should have already been done after the last blead release, so you may find nothing to do here.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> Not done, yet.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">Check copyright years</div>
+  <div class="panel-body">
+
+
+<p>Check that the copyright years are up to date by running:</p>
+
+<pre>    $ ./perl t/porting/copyright.t --now</pre>
+
+<p>Remedy any test failures by editing README or perl.c accordingly (search for the &#34;Copyright&#34;). If updating perl.c, check if the file&#39;s own copyright date in the C comment at the top needs updating, as well as the one printed by <code>-v</code>.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> done 2017-02-19.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">Check more build configurations</div>
+  <div class="panel-body">
+
+
+<p>Try running the full test suite against multiple Perl configurations. Here are some sets of Configure flags you can try:</p>
+
+<ul>
+<li><code>-Duseshrplib -Dusesitecustomize</code></li>
+
+<li><code>-Duserelocatableinc</code></li>
+
+<li><code>-Dusethreads</code></li>
+</ul>
+
+<p>If you have multiple compilers on your machine, you might also consider compiling with <code>-Dcc=$other_compiler</code>.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> done, no test failures.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">update perlport</div>
+  <div class="panel-body">
+
+
+<p><a href="http://search.cpan.org/perldoc?perlport" class="podlinkpod"
+>perlport</a> has a section currently named <i>Supported Platforms</i> that indicates which platforms are known to build in the current release. If necessary update the list and the indicated version number.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> done.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">check a readonly build</div>
+  <div class="panel-body">
+
+
+<p>Even before other prep work, follow the steps in <a href="#build_the_tarball" class="podlinkpod"
+>&#34;build the tarball&#34;</a> and test it locally. Because a perl source tarballs sets many files read-only, it could test differently than tests run from the repository. After you&#39;re sure permissions aren&#39;t a problem, delete the generated directory and tarballs.</p>
+
+
+  </div>
+ <div class="panel-footer"><span class="glyphicon glyphicon-ok"></span> done.</span></div>
+</div>
+
+
+          </div><!-- /.blog-post -->
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>This checklist is based on the <a href="https://metacpan.org/pod/distribution/perl/Porting/release_managers_guide.pod">Release Manager Guide</a>.</p>
+            <p>The sources for this website are available at <a href="https://github.com/reneeb/5-25-10">https://github.com/reneeb/5-25-10</a>.</p>
+          </div>
+          <div class="sidebar-module">
+            <h4>Steps</h4>
+            <ol class="list-unstyled">
+              <li><a href="./prerequesits.html">Prerequesits</a></li>
+              <li><a href="./advance_actions.html">Building a release - advance actions</a></li>
+              <li><a href="./on_the_day.html">Building a release - on the day</a></li>
+              <li><a href="./day_after.html">Building a release - the day after</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+  </body>
+</html>
+

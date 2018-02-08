@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Checklist for Perl release 5.25.10</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./css/blog.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item active" href="/">Home</a>
+          <a class="blog-nav-item" href="#">Download current .tar.gz</a>
+          <a class="blog-nav-item" href="http://perl-services.de/imprint">About</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="blog-header">
+        <h1 class="blog-title">The Perl release 5.25.10</h1>
+        <p class="lead blog-description">My checklist for the developer release 5.25.10 of the programming language Perl.</p>
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+          <div class="blog-post">
+            <h2 class="blog-post-title">Pre-release</h2>
+            <p class="blog-post-meta">February 14, 2017 by Renée</p>
+
+<div class="panel panel-success">
+  <div class="panel-heading">PAUSE account with pumpkin status</div>
+  <div class="panel-body">
+<p>Make sure you have a PAUSE account suitable for uploading a perl release. If you don't have a PAUSE account, then request one:<p>
+<p><pre><code>https://pause.perl.org/pause/query?ACTION=request_id</code></pre></p>
+<p>Check that your account is allowed to upload perl distros: go to https://pause.perl.org/pause/authenquery?ACTION=who_pumpkin and check that your PAUSE ID is listed there. If not, ask Andreas König to add your ID to the list of people allowed to upload something called perl. You can find Andreas' email address at:</p>
+<p><pre><code>https://pause.perl.org/pause/query?ACTION=pause_04imprint</code></pre></p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> Andreas added me to group pumpking</span></div>
+</div>
+
+<div class="panel panel-warning">
+  <div class="panel-heading">rt.perl.org update access</div>
+  <div class="panel-body">
+<p>Make sure you have permission to close tickets on <a href="http://rt.perl.org/">http://rt.perl.org/</a> so you can respond to bug report as necessary during your stint. If you don't, make an account (if you don't have one) and contact the pumpking with your username to get ticket-closing permission.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-remove"></span> Created new account and requested permissions.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">git checkout and commit bit</div>
+  <div class="panel-body">
+<p>You will need a working git installation, checkout of the perl git repository and perl commit bit. For information about working with perl and git, see <a href="https://metacpan.org/pod/perlgit">pod/perlgit.pod</a>.</p>
+<p>If you are not yet a perl committer, you won't be able to make a release. Have a chat with whichever evil perl porter tried to talk you into the idea in the first place to figure out the best way to resolve the issue.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> Made a test commit</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">web-based file share</div>
+  <div class="panel-body">
+<p>You will need to be able to share tarballs with #p5p members for pre-release testing, and you may wish to upload to PAUSE via URL. Make sure you have a way of sharing files, such as a web server or file-sharing service.</p>
+<p>Porters have access to the "dromedary" server (users.perl5.git.perl.org), which has a public_html directory to share files with. (http://users.perl5.git.perl.org/~username/perl-5.xx.y.tar.gz)</p>
+<p>If you use Dropbox, you can append "raw=1" as a parameter to their usual sharing link to allow direct download (albeit with redirects).</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> I use this website</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">git clone of <a href="https://github.com/perlorg/perlweb">https://github.com/perlorg/perlweb</a></div>
+  <div class="panel-body">
+<p>For updating the <a href="http://dev.perl.org">http://dev.perl.org</a> web pages, either a Github account or sweet-talking somebody with a Github account into obedience is needed. This is only needed on the day of the release or shortly afterwards.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> Available at <a href="https://github.com/reneeb/perlweb">https://github.com/reneeb/perlweb</a></span></div>
+</div>
+
+<div class="panel panel-warning">
+  <div class="panel-heading">Quotation for release announcement epigraph</div>
+  <div class="panel-body">
+<p>You will need a quotation to use as an epigraph to your release announcement.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> I have one, will be published on this website soon.</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">Install the previous version of perl</div>
+  <div class="panel-body">
+<p>During the testing phase of the release you have created, you will be asked to compare the installed files with a previous install. Save yourself some time on release day, and have a (clean) install of the previous version ready.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> Installed Perl 5.24.1</span></div>
+</div>
+
+<div class="panel panel-success">
+  <div class="panel-heading">Create virtual machines for testing</div>
+  <div class="panel-body">
+<p>When the tarball is created, you should check it (preferrably on more than one machine.</p>
+  </div>
+ <div class="panel-footer warning"><span class="warning"><span class="glyphicon glyphicon-ok"></span> Setup an Ubuntu and a FreeBSD box</span></div>
+</div>
+          </div><!-- /.blog-post -->
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>About</h4>
+            <p>This checklist is based on the <a href="https://metacpan.org/pod/distribution/perl/Porting/release_managers_guide.pod">Release Manager Guide</a>.</p>
+            <p>The sources for this website are available at <a href="https://github.com/reneeb/5-25-10">https://github.com/reneeb/5-25-10</a>.</p>
+          </div>
+          <div class="sidebar-module">
+            <h4>Steps</h4>
+            <ol class="list-unstyled">
+              <li><a href="./prerequesits.html">Prerequesits</a></li>
+              <li><a href="./advance_actions.html">Building a release - advance actions</a></li>
+              <li><a href="./on_the_day.html">Building a release - on the day</a></li>
+              <li><a href="./day_after.html">Building a release - the day after</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+
+      </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+  </body>
+</html>
+
